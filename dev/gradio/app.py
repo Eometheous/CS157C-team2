@@ -9,7 +9,7 @@ theme = gr.themes.Base(
 )
 selected_mood = 0
 #here we could bind in the link to the playlists in the DB
-playlist = ["/Users/macbookair/NoSQLProject/images/Alan Walker - Dreamer [NCS Release].mp3", "/Users/macbookair/NoSQLProject/images/Diamond Eyes - Stay [NCS Release].mp3" ]
+playlist = ["images/Alan Walker - Dreamer [NCS Release].mp3", "images/Diamond Eyes - Stay [NCS Release].mp3" ]
 title = ["Alan Walker - Dreamer", "Diamond Eyes - Stay"]
 
 #testing method, might delete later
@@ -28,7 +28,7 @@ def change_tab():
 #our site is one big block
 with gr.Blocks(theme=theme) as home:
     #the following line is needed to let the browser access the data:
-    gr.set_static_paths(paths=["/Users/macbookair/NoSQLProject/images/"])
+    gr.set_static_paths(paths=["images/"])
     #we're using 2 tabs, one for the homepage and one for settings
     with gr.Tabs() as tabs:
         with gr.TabItem("Home", id=0):
@@ -37,7 +37,7 @@ with gr.Blocks(theme=theme) as home:
                 html1 = gr.HTML("""
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <div style="display: flex; align-items: center;">
-                        <img src="/file=/Users/macbookair/NoSQLProject/images/play.png" style="height: 50px; margin-right: 10px;">
+                        <img src="/file=images/play.png" style="height: 50px; margin-right: 10px;">
                         <h2 style="margin: 0;"><b>PlayNext</b></h2>
                     </div>
                 <h3 style="margin: 0; text-align: right;">Settings</h3>
@@ -72,22 +72,22 @@ with gr.Blocks(theme=theme) as home:
             with gr.Row():
                 html4 = gr.HTML("""
                     <div style="display: flex; align-items: center;">
-                    <img src="/file=/Users/macbookair/NoSQLProject/images/pexels-andre-furtado-1263986.jpg" style="height: 120px; margin-right: 10px;">
+                    <img src="/file=images/pexels-andre-furtado-1263986.jpg" style="height: 120px; margin-right: 10px;">
                     </div>
                     """)
                 html5 = gr.HTML("""
                     <div style="display: flex; align-items: center;">
-                    <img src="/file=/Users/macbookair/NoSQLProject/images/pexels-renato-1264438.jpg" style="height: 120px; margin-right: 10px;">
+                    <img src="/file=images/pexels-renato-1264438.jpg" style="height: 120px; margin-right: 10px;">
                     </div>
                     """)
                 html6 = gr.HTML("""
                     <div style="display: flex; align-items: center;">
-                    <img src="/file=/Users/macbookair/NoSQLProject/images/pexels-pixabay.jpg" style="height: 120px; margin-right: 10px;">
+                    <img src="/file=images/pexels-pixabay.jpg" style="height: 120px; margin-right: 10px;">
                     </div>
                     """)
                 html7 = gr.HTML("""
                     <div style="display: flex; align-items: center;">
-                    <img src="/file=/Users/macbookair/NoSQLProject/images/pexels-acharaporn-kamornboonyarush-1028741.jpg" style="height: 120px; margin-right: 10px;">
+                    <img src="/file=images/pexels-acharaporn-kamornboonyarush-1028741.jpg" style="height: 120px; margin-right: 10px;">
                     </div>
                     """)
 
