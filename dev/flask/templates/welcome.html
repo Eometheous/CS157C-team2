@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ name }}!</h1>
+        <p class="email">You're logged in! Email: {{ email }}</p>
+        <p>This is where we have to display the gradio page</p>
+        <div class="profile-pic">
+            <img src="{{ profile_pic }}" alt="Google profile pic">
+        </div>
+        <a class="button" href="/logout">Logout</a>
+    </div>
+</body>
+</html>

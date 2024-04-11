@@ -4,7 +4,7 @@ import os
 import sqlite3
 
 # Third-party libraries
-from flask import Flask, redirect, request, url_for
+from flask import Flask, redirect, request, url_for, render_template, render_template_string
 from flask_login import (
     LoginManager,
     current_user,
@@ -53,17 +53,20 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<p>This is where we have to display the gradio page</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.profile_pic
-            )
-        )
+        # return redirect('https://127.0.0.1:7860/')
+        return render_template('welcome.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
+        # return (
+        #     "<p>Hello, {}! You're logged in! Email: {}</p>"
+        #     "<p>This is where we have to display the gradio page</p>"
+        #     "<div><p>Google Profile Picture:</p>"
+        #     '<img src="{}" alt="Google profile pic"></img></div>'
+        #     '<a class="button" href="/logout">Logout</a>'.format(
+        #         current_user.name, current_user.email, current_user.profile_pic
+        #     )
+        # )
     else:
-        return '<a class="button" href="/login">Google Login</a>'
+        # return '<a class="button" href="/login">Google Login</a>'
+        return render_template('login.html')
     
 
 @app.route("/login")
@@ -148,6 +151,11 @@ def callback():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+# @app.route('/music')
+# def gradio_app():
+#     # Render the Gradio interface using render_template_string
+#     return render_template_string(mood_player.launch())
 
 
 def get_google_provider_cfg():

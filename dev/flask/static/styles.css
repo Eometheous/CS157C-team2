@@ -1,0 +1,49 @@
+body {
+    background-color: #f0f0f0; /* Light gray background */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff; /* White background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+h1 {
+    color: #3366ff; /* Blue heading */
+}
+
+.email {
+    color: #009900; /* Green text */
+}
+
+.profile-pic {
+    margin-top: 20px;
+}
+
+.profile-pic img {
+    max-width: 100px;
+    border-radius: 50%;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff6600; /* Orange button */
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin-top: 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #ff9900; /* Brighter orange on hover */
+}
