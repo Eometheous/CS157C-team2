@@ -108,6 +108,8 @@ with gr.Blocks(theme=theme) as home:
         with gr.TabItem("Player", id=1):
             with gr.Blocks(theme=theme) as player:
                 with gr.Row():
+                    gr.Markdown(title[selected_mood])
+                with gr.Row():
                     gr.Audio(value=playlist[selected_mood])
 
     
