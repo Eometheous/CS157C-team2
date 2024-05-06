@@ -33,3 +33,13 @@ https://console.developers.google.com/apis/credentials
 12. cd to dev/flask
 
 13. run `python3 app.py`
+
+MongoDB
+1. Download Docker Desktop.
+2. Pull the MongoDB Community Edition Image.
+3. Run the image with the port 27017 open.
+4. Download the 1 Million tracks dataset from.
+`https://www.kaggle.com/datasets/amitanshjoshi/spotify-1million-tracks/data`
+5. Place the spotify_data.csv file into dev/scripts.
+6. Run `python3 __init__.py` from dev/scripts.
+7. Run `python3 checkDB.py` to verify that the songs were added succesfully. 
