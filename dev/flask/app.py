@@ -2,9 +2,10 @@
 import json
 import os
 import sqlite3
+import pymongo
 
 # Third-party libraries
-from flask import Flask, redirect, request, url_for, render_template, render_template_string
+from flask import Flask, redirect, request, url_for, render_template, render_template_string, jsonify
 from flask_login import (
     LoginManager,
     current_user,
@@ -25,6 +26,11 @@ GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
+
+#MongoDB
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+db = client["spotify_songs"]
+songs_collection = db["songs"]
 
 # Flask app setup
 app = Flask(__name__)
@@ -156,6 +162,59 @@ def logout():
 # def gradio_app():
 #     # Render the Gradio interface using render_template_string
 #     return render_template_string(mood_player.launch())
+
+# gets happy sounding songs
+@app.route("/songs/happy")
+# @login_required
+def get_happy_songs():
+    happy_songs = songs_collection.find({
+        "danceability": { "$gte": '0.6' },
+        "energy": { "$gte": '0.6' },
+        "valence": { "$gte": '0.6' }
+    }, {
+         "_id": 0,
+         "artist_name": 1, 
+         "track_name": 1
+    })
+    return jsonify(list(happy_songs))
+
+# gets sad sounding songs
+@app.route('/songs/sad')
+def sad_songs():
+    sad_songs = songs_collection.find({
+        "energy": { "$lte": 0.4 },
+        "valence": { "$lte": 0.4 }
+    }, {
+         "_id": 0,
+         "artist_name": 1, 
+         "track_name": 1
+    })
+    return jsonify(list(sad_songs))
+
+# gets energized sounding songs
+@app.route('/songs/energized')
+def energized_songs():
+    energized_songs = songs_collection.find({
+        "energy": { "$gte": 0.6 },
+        "tempo": { "$gte": 120 }
+    }, {
+         "_id": 0,
+         "artist_name": 1, 
+         "track_name": 1
+    })
+    return jsonify(list(energized_songs))
+
+# gets tired sounding songs
+@app.route('/songs/tired')
+def tired_songs():
+    tired_songs = songs_collection.find({
+        "energy": { "$lte": 0.4 }
+    }, {
+         "_id": 0,
+         "artist_name": 1, 
+         "track_name": 1
+    })
+    return jsonify(list(tired_songs))
 
 
 def get_google_provider_cfg():
