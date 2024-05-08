@@ -1,11 +1,13 @@
 # Python standard libraries
 import json
 import os
-import sqlite3
 import pymongo
+import logging
+import gradio as gr
 
 # Third-party libraries
-from flask import Flask, redirect, request, url_for, render_template, render_template_string, jsonify
+from flask import Flask, redirect, request, url_for, render_template, render_template_string, jsonify, Response
+from flask_login import UserMixin
 from flask_login import (
     LoginManager,
     current_user,
@@ -16,9 +18,6 @@ from flask_login import (
 from oauthlib.oauth2 import WebApplicationClient
 import requests
 
-# Internal imports
-from db import init_db_command
-from user import User
 
 # Configuration
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
@@ -31,6 +30,30 @@ GOOGLE_DISCOVERY_URL = (
 client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["spotify_songs"]
 songs_collection = db["songs"]
+users_collection = db["users"]
+
+class User(UserMixin):
+    def __init__(self, id_, name, email, profile_pic):
+        self.id = id_
+        self.name = name
+        self.email = email
+        self.profile_pic = profile_pic
+
+    @staticmethod
+    def create(id_, name, email, profile_pic):
+        users_collection.insert_one({"_id": id_, "name": name, "email": email, "profile_pic": profile_pic})
+
+    @staticmethod
+    def get(id_):
+        user_data = users_collection.find_one({"_id": id_})
+        if user_data:
+            return User(id_=user_data['_id'], name=user_data['name'], email=user_data['email'], profile_pic=user_data['profile_pic'])
+        else:
+            return None
+        
+    def is_active(self):
+        return True 
+
 
 # Flask app setup
 app = Flask(__name__)
@@ -41,26 +64,30 @@ app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-# Naive database setup
-try:
-    init_db_command()
-except sqlite3.OperationalError:
-    # Assume it's already been created
-    pass
-
 # OAuth 2 client setup
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
-# Flask-Login helper to retrieve a user from our db
+# Flask-Login helper to retrieve a user from MongoDB
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(user_id)
+    user = User.get(user_id)
+    if user:
+        logging.info("User loaded: {}".format(user))
+        return user
+    else:
+        logging.warning("User not found for ID: {}".format(user_id))
+        return None
+
+# # Define route to render Gradio page
+# @app.route("/gradio")
+# def render_gradio_page():
+#     interface = gr.Interface(search_recipes, [mood_buttons, genre_buttons], "text")
+#     return render_template("gradio.html", interface=interface)
 
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        # return redirect('https://127.0.0.1:7860/')
-        return render_template('welcome.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
+        return render_template('post_login.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
         # return (
         #     "<p>Hello, {}! You're logged in! Email: {}</p>"
         #     "<p>This is where we have to display the gradio page</p>"
@@ -73,7 +100,19 @@ def index():
     else:
         # return '<a class="button" href="/login">Google Login</a>'
         return render_template('login.html')
+
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    # Retrieve form data
+    mood = request.form['mood']
+    genre = request.form['genre']
+    artist_name = request.form['artist_name']
+    track_name = request.form['track_name']
     
+    # Redirect or render a thank you page
+    return 'Form submitted successfully!'
+    # return render_template('response_template.html', response_content=data(as_text=True))
 
 @app.route("/login")
 def login():
@@ -135,19 +174,14 @@ def callback():
     else:
         return "User email not available or not verified by Google.", 400
 
-    # Create a user in our db with the information provided
-    # by Google
-    user = User(
-        id_=unique_id, name=users_name, email=users_email, profile_pic=picture
-    )
 
-    # Doesn't exist? Add to database
-    if not User.get(unique_id):
+    # Create or retrieve user from MongoDB
+    user = User.get(unique_id)
+    if not user:
         User.create(unique_id, users_name, users_email, picture)
 
-    # Begin user session by logging the user in
+    # Log in the user
     login_user(user)
-
     # Send user back to homepage
     return redirect(url_for("index"))
 
@@ -175,7 +209,7 @@ def get_happy_songs():
          "_id": 0,
          "artist_name": 1, 
          "track_name": 1
-    })
+    }).limit(10)
     return jsonify(list(happy_songs))
 
 # gets sad sounding songs
@@ -188,7 +222,7 @@ def sad_songs():
          "_id": 0,
          "artist_name": 1, 
          "track_name": 1
-    })
+    }).limit(10)
     return jsonify(list(sad_songs))
 
 # gets energized sounding songs
@@ -201,7 +235,7 @@ def energized_songs():
          "_id": 0,
          "artist_name": 1, 
          "track_name": 1
-    })
+    }).limit(10)
     return jsonify(list(energized_songs))
 
 # gets tired sounding songs
@@ -213,7 +247,7 @@ def tired_songs():
          "_id": 0,
          "artist_name": 1, 
          "track_name": 1
-    })
+    }).limit(10)
     return jsonify(list(tired_songs))
 
 

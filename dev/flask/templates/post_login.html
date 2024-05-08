@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Preferences</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 80%;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .welcome-section {
+            flex: 1;
+            padding: 40px;
+            border-right: 2px solid #ddd;
+        }
+        .welcome-section h1 {
+            color: #333;
+            margin: 0;
+        }
+        .welcome-section p {
+            color: #666;
+            margin: 10px 0;
+        }
+        .profile-pic img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            line-height: 1;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .preferences-section {
+            flex: 1;
+            padding: 40px;
+        }
+        .preferences-section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+        input[type="radio"], input[type="text"] {
+            margin-right: 10px;
+            margin-bottom: 10px;
+            vertical-align: middle;
+        }
+        input[type="text"] {
+            width: calc(100% - 21px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Welcome, {{ name }}!</h1>
+            <p class="email">You're logged in! Email: {{ email }}</p>
+            <div class="profile-pic">
+                <img src="{{ profile_pic }}" alt="Google profile pic">
+            </div>
+            <a class="button" href="/logout">Logout</a>
+        </div>
+        <div class="preferences-section">
+            <h2>Select Your Preferences</h2>
+            <form action="/submit" method="post">
+                <h3>Mood:</h3>
+                <div>
+                    <input type="radio" id="happy" name="mood" value="happy">
+                    <label for="happy">Happy</label>
+                </div>
+                <div>
+                    <input type="radio" id="sad" name="mood" value="sad">
+                    <label for="sad">Sad</label>
+                </div>
+                <div>
+                    <input type="radio" id="energetic" name="mood" value="energetic">
+                    <label for="energetic">Energetic</label>
+                </div>
+                <div>
+                    <input type="radio" id="relaxed" name="mood" value="relaxed">
+                    <label for="relaxed">Relaxed</label>
+                </div>
+                <div>
+                    <input type="radio" id="romantic" name="mood" value="romantic">
+                    <label for="romantic">Romantic</label>
+                </div>
+                
+                <h3>Genre:</h3>
+                <div>
+                    <input type="radio" id="pop" name="genre" value="pop">
+                    <label for="pop">Pop</label>
+                </div>
+                <div>
+                    <input type="radio" id="rock" name="genre" value="rock">
+                    <label for="rock">Rock</label>
+                </div>
+                <div>
+                    <input type="radio" id="hip-hop" name="genre" value="hip-hop">
+                    <label for="hip-hop">Hip Hop</label>
+                </div>
+                <div>
+                    <input type="radio" id="jazz" name="genre" value="jazz">
+                    <label for="jazz">Jazz</label>
+                </div>
+                <div>
+                    <input type="radio" id="country" name="genre" value="country">
+                    <label for="country">Country</label>
+                </div>
+                
+                <h3>Artist Name:</h3>
+                <input type="text" id="artist_name" name="artist_name" placeholder="Enter artist name">
+                
+                <h3>Track Name:</h3>
+                <input type="text" id="track_name" name="track_name" placeholder="Enter track name">
+                
+                <br><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
