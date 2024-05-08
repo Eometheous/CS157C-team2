@@ -14,3 +14,8 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+###
+# spotify_data.csv
+###
+*.csv
