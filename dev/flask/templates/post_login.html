@@ -74,7 +74,7 @@
             color: #555;
             margin-top: 20px;
         }
-        input[type="radio"], input[type="text"] {
+        input[type="radio"] {
             margin-right: 10px;
             margin-bottom: 10px;
             vertical-align: middle;
@@ -85,6 +85,7 @@
             border-radius: 5px;
             border: 1px solid #ccc;
             transition: border-color 0.3s ease;
+            margin-top: 10px;
         }
         input[type="text"]:focus {
             border-color: #007bff;
@@ -98,6 +99,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
@@ -113,64 +115,114 @@
                 <img src="{{ profile_pic }}" alt="Google profile pic">
             </div>
             <a class="button" href="/logout">Logout</a>
+            <a class="button" href="/dashboard">Dashboard</a>
         </div>
         <div class="preferences-section">
             <h2>Select Your Preferences</h2>
-            <form action="/submit" method="post">
-                <h3>Mood:</h3>
-                <div>
-                    <input type="radio" id="happy" name="mood" value="happy">
-                    <label for="happy">Happy</label>
+            <form id="songForm" action="/submit" method="post" onsubmit="return validateForm()">
+                <!-- Mood and Genre Selection -->
+                <div style="display: flex; flex-direction: row;">
+                    <div style="flex: 1;">
+                        <h3>Mood:</h3>
+                        <div>
+                            <input type="radio" id="happy" name="mood" value="happy" required>
+                            <label for="happy">Happy</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="sad" name="mood" value="sad">
+                            <label for="sad">Sad</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="energetic" name="mood" value="energetic">
+                            <label for="energetic">Energetic</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="tired" name="mood" value="tired">
+                            <label for="tired">Tired</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="search" name="mood" value="search">
+                            <label for="search">Search</label>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3>Genre:</h3>
+                        <div>
+                            <input type="radio" id="pop" name="genre" value="pop" required>
+                            <label for="pop">Pop</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="rock" name="genre" value="rock">
+                            <label for="rock">Rock</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="hip-hop" name="genre" value="hip-hop">
+                            <label for="hip-hop">Hip Hop</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="electronic" name="genre" value="electronic">
+                            <label for="electronic">Electronic</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="jazz" name="genre" value="jazz">
+                            <label for="jazz">Jazz</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="clasical" name="genre" value="clasical">
+                            <label for="clasical">Clasical</label>
+                        </div>
+                        <div>
+                            <input type="radio" id="search" name="genre" value="search">
+                            <label for="search">Search</label>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <input type="radio" id="sad" name="mood" value="sad">
-                    <label for="sad">Sad</label>
-                </div>
-                <div>
-                    <input type="radio" id="energetic" name="mood" value="energetic">
-                    <label for="energetic">Energetic</label>
-                </div>
-                <div>
-                    <input type="radio" id="relaxed" name="mood" value="relaxed">
-                    <label for="relaxed">Relaxed</label>
-                </div>
-                <div>
-                    <input type="radio" id="romantic" name="mood" value="romantic">
-                    <label for="romantic">Romantic</label>
-                </div>
-                
-                <h3>Genre:</h3>
-                <div>
-                    <input type="radio" id="pop" name="genre" value="pop">
-                    <label for="pop">Pop</label>
-                </div>
-                <div>
-                    <input type="radio" id="rock" name="genre" value="rock">
-                    <label for="rock">Rock</label>
-                </div>
-                <div>
-                    <input type="radio" id="hip-hop" name="genre" value="hip-hop">
-                    <label for="hip-hop">Hip Hop</label>
-                </div>
-                <div>
-                    <input type="radio" id="jazz" name="genre" value="jazz">
-                    <label for="jazz">Jazz</label>
-                </div>
-                <div>
-                    <input type="radio" id="country" name="genre" value="country">
-                    <label for="country">Country</label>
-                </div>
-                
-                <h3>Artist Name:</h3>
-                <input type="text" id="artist_name" name="artist_name" placeholder="Enter artist name">
-                
-                <h3>Track Name:</h3>
-                <input type="text" id="track_name" name="track_name" placeholder="Enter track name">
-                
+                <!-- Artist Name -->
+                <h3>Search:</h3>
+                <input type="text" id="artist_name" name="artist_name" placeholder="Type here">
+                <!-- Track Name -->
+                <!-- <h3>Track Name:</h3> -->
+                <!-- <input type="text" id="track_name" name="track_name" placeholder="Enter track name"> -->
+                <!-- Submit Button -->
                 <br><br>
                 <button type="submit">Submit</button>
             </form>
         </div>
     </div>
+
+    <script>
+        function validateForm() {
+            var moodChecked = false;
+            var genreChecked = false;
+
+            // Check if any mood radio button is checked
+            var moodRadios = document.getElementsByName('mood');
+            for (var i = 0; i < moodRadios.length; i++) {
+                if (moodRadios[i].checked) {
+                    moodChecked = true;
+                    break;
+                }
+            }
+
+            // Check if any genre radio button is checked
+            var genreRadios = document.getElementsByName('genre');
+            for (var i = 0; i < genreRadios.length; i++) {
+                if (genreRadios[i].checked) {
+                    genreChecked = true;
+                    break;
+                }
+            }
+
+            // Display an alert if either mood or genre is not selected
+            if (!moodChecked || !genreChecked) {
+                alert("Please select one option from both Mood and Genre sections.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
+    
 </body>
 </html>
