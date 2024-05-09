@@ -3,7 +3,7 @@ import json
 import os
 import pymongo
 import logging
-import gradio as gr
+from datetime import datetime
 
 # Third-party libraries
 from flask import Flask, redirect, request, url_for, render_template, render_template_string, jsonify, Response
@@ -31,6 +31,7 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["spotify_songs"]
 songs_collection = db["songs"]
 users_collection = db["users"]
+user_behavior_collection = db["user_behavior"] 
 
 class User(UserMixin):
     def __init__(self, id_, name, email, profile_pic):
@@ -52,7 +53,13 @@ class User(UserMixin):
             return None
         
     def is_active(self):
-        return True 
+        return True
+
+    def is_anonymous(self):
+        return False
+    
+    def is_authenticated(self):
+        return True
 
 
 # Flask app setup
@@ -87,19 +94,31 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return render_template('post_login.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
-        # return (
-        #     "<p>Hello, {}! You're logged in! Email: {}</p>"
-        #     "<p>This is where we have to display the gradio page</p>"
-        #     "<div><p>Google Profile Picture:</p>"
-        #     '<img src="{}" alt="Google profile pic"></img></div>'
-        #     '<a class="button" href="/logout">Logout</a>'.format(
-        #         current_user.name, current_user.email, current_user.profile_pic
-        #     )
-        # )
+        return render_template('post_login2.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
     else:
         # return '<a class="button" href="/login">Google Login</a>'
         return render_template('login.html')
+
+def track_user_behavior(user_id, name, mood, genre, search):
+    if user_id:
+        document = {
+            "user_id": user_id,
+            "name":name,
+            "mood": mood,
+            "genre": genre,
+            "search": search,
+            "timestamp": datetime.now()
+        }
+        user_behavior_collection.insert_one(document)
+        print("added to collection")
+
+@app.route('/dashboard')
+def dashboard():
+    # Render the dashboard template with dummy history data
+    user_behavior_data = user_behavior_collection.find({"user_id": current_user.id}, {"_id": 0,"user_id":0,"name":0})
+    print(user_behavior_data)
+    return render_template('dashboard.html', user_behavior_data=user_behavior_data)
+    # return render_template('dashboard.html', history=dummy_history)
 
 
 @app.route('/submit', methods=['POST'])
@@ -107,11 +126,59 @@ def submit():
     # Retrieve form data
     mood = request.form['mood']
     genre = request.form['genre']
-    artist_name = request.form['artist_name']
-    track_name = request.form['track_name']
+    search = request.form['artist_name']
+    # track_name = request.form['track_name']
+
+    if current_user.is_authenticated:
+    # Call track_user_behavior function with the current user ID
+        track_user_behavior(current_user.id, current_user.name, mood, genre, search)
+    else:
+        print("user not authorized")
     
+    print(f"mood:{mood}")
+    print(f"genre:{genre}")
+    print(f"search:{search}")
+    # print(f"track_name:{track_name}")
+
+    if mood=="search" and genre=="search":
+        search_results = songs_collection.find({ "$text": { "$search": search } })
+        return render_template('songs.html',songs=search_results[:10])
+
+
+    if mood=="happy":
+        songs = get_happy_songs()
+    elif mood=="sad":
+        songs = sad_songs()
+    elif mood=="energetic":
+        songs = energized_songs()
+    elif mood=="tired":
+        songs = tired_songs()
+    else:
+        # return "form submitted. no valid function yet"
+        songs = songs_collection.find()
+    
+    if genre=="pop":
+        songs = [song for song in songs if song.get('genre') == 'pop'][:10]
+    elif genre=="rock":
+        songs = [song for song in songs if song.get('genre') == 'rock'][:10]
+    elif genre=="hip-hop":
+        songs = [song for song in songs if song.get('genre') == 'hip-hop'][:10]
+    elif genre=="electronic":
+        songs = [song for song in songs if song.get('genre') == 'electronic'][:10]
+    elif genre=="jazz":
+        songs = [song for song in songs if song.get('genre') == 'jazz'][:10]
+    elif genre=="classical":
+        songs = [song for song in songs if song.get('genre') == 'classical'][:10]
+    else:
+        # if genre is NA
+        songs = songs[:10]
+
+    print(f"songs = {songs}")
+
+
+    return render_template('songs.html',songs=songs[:10])
     # Redirect or render a thank you page
-    return 'Form submitted successfully!'
+    # return 'Form submitted successfully!'
     # return render_template('response_template.html', response_content=data(as_text=True))
 
 @app.route("/login")
@@ -197,6 +264,8 @@ def logout():
 #     # Render the Gradio interface using render_template_string
 #     return render_template_string(mood_player.launch())
 
+
+
 # gets happy sounding songs
 @app.route("/songs/happy")
 # @login_required
@@ -208,9 +277,11 @@ def get_happy_songs():
     }, {
          "_id": 0,
          "artist_name": 1, 
-         "track_name": 1
-    }).limit(10)
-    return jsonify(list(happy_songs))
+         "track_name": 1,
+         "genre":1
+    })
+    # return jsonify(list(happy_songs))
+    return happy_songs
 
 # gets sad sounding songs
 @app.route('/songs/sad')
@@ -221,9 +292,11 @@ def sad_songs():
     }, {
          "_id": 0,
          "artist_name": 1, 
-         "track_name": 1
-    }).limit(10)
-    return jsonify(list(sad_songs))
+         "track_name": 1,
+         "genre":1
+    })
+    # return jsonify(list(sad_songs))
+    return sad_songs
 
 # gets energized sounding songs
 @app.route('/songs/energized')
@@ -234,9 +307,11 @@ def energized_songs():
     }, {
          "_id": 0,
          "artist_name": 1, 
-         "track_name": 1
-    }).limit(10)
-    return jsonify(list(energized_songs))
+         "track_name": 1,
+         "genre":1
+    })
+    # return jsonify(list(energized_songs))
+    return energized_songs
 
 # gets tired sounding songs
 @app.route('/songs/tired')
@@ -246,8 +321,9 @@ def tired_songs():
     }, {
          "_id": 0,
          "artist_name": 1, 
-         "track_name": 1
-    }).limit(10)
+         "track_name": 1,
+         "genre":1
+    })
     return jsonify(list(tired_songs))
 
 
@@ -256,5 +332,5 @@ def get_google_provider_cfg():
 
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc")
+    app.run(ssl_context="adhoc",debug=True)
 
