@@ -216,8 +216,8 @@ def get_happy_songs():
 @app.route('/songs/sad')
 def sad_songs():
     sad_songs = songs_collection.find({
-        "energy": { "$lte": 0.4 },
-        "valence": { "$lte": 0.4 }
+        "energy": { "$lte": '0.4' },
+        "valence": { "$lte": '0.4' }
     }, {
          "_id": 0,
          "artist_name": 1, 
@@ -229,8 +229,8 @@ def sad_songs():
 @app.route('/songs/energized')
 def energized_songs():
     energized_songs = songs_collection.find({
-        "energy": { "$gte": 0.6 },
-        "tempo": { "$gte": 120 }
+        "energy": { "$gte": '0.6' },
+        "tempo": { "$gte": '120' }
     }, {
          "_id": 0,
          "artist_name": 1, 
@@ -242,7 +242,7 @@ def energized_songs():
 @app.route('/songs/tired')
 def tired_songs():
     tired_songs = songs_collection.find({
-        "energy": { "$lte": 0.4 }
+        "energy": { "$lte": '0.4' }
     }, {
          "_id": 0,
          "artist_name": 1, 
