@@ -94,7 +94,7 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return render_template('post_login2.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
+        return render_template('post_login.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
     else:
         # return '<a class="button" href="/login">Google Login</a>'
         return render_template('login.html')
