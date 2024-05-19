@@ -30,6 +30,13 @@
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .song-info {
+            flex: 1;
         }
 
         .song h2 {
@@ -49,6 +56,21 @@
         .song .artist {
             color: #ff7300; /* Yellow */
         }
+
+        .favorite-form {
+            margin-left: 20px;
+        }
+
+        .favorite-form button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .favorite-form button img {
+            width: 24px;
+            height: 24px;
+        }
     </style>
 </head>
 <body>
@@ -57,12 +79,16 @@
         <!-- Display each song -->
         {% for song in songs %}
         <div class="song">
-            <h2>{{ song['track_name'] }}</h2>
-            <p class="artist">Artist: {{ song['artist_name'] }}</p>
+            <div class="song-info">
+                <h2>{{ song['track_name'] }}</h2>
+                <p class="artist">Artist: {{ song['artist_name'] }}</p>
+            </div>
             <form class="favorite-form" method="post">
                 <input type="hidden" name="artistName" value="{{ song['artist_name'] }}">
                 <input type="hidden" name="trackName" value="{{ song['track_name'] }}">
-                <button type="submit">Like</button>
+                <button type="submit">
+                    <img src="../static/images/like.png" alt="Like">
+                </button>
             </form>
         </div>
         {% endfor %}
