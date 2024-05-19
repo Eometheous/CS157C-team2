@@ -5,144 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Song Preferences</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            width: 80%;
-            background-color: #fff;
-            border-radius: 20px;
-            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        .main-sections {
-            display: flex;
-            width: 100%;
-        }
-        .welcome-section {
-            flex: 1;
-            padding: 40px;
-            border-right: 2px solid #ddd;
-        }
-        .welcome-section h1 {
-            color: #333;
-            margin: 0;
-        }
-        .welcome-section p {
-            color: #666;
-            margin: 10px 0;
-        }
-        .profile-pic img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 20px;
-        }
-        .button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            display: inline-block;
-            text-align: center;
-            line-height: 1;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        .preferences-section {
-            flex: 1;
-            padding: 40px;
-        }
-        .preferences-section h2 {
-            color: #333;
-            margin-top: 0;
-        }
-        h3 {
-            color: #555;
-            margin-top: 20px;
-        }
-        input[type="radio"] {
-            margin-right: 10px;
-            margin-bottom: 10px;
-            vertical-align: middle;
-        }
-        input[type="text"] {
-            width: calc(100% - 21px);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            transition: border-color 0.3s ease;
-            margin-top: 10px;
-        }
-        input[type="text"]:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .liked-songs {
-            width: 95%;
-            padding: 10px;
-            margin: 5px;
-        }
-        .liked-songs h1 {
-            color: #333;
-        }
-        .liked-songs table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .liked-songs th, .liked-songs td {
-            padding: 10px;
-            text-align: left;
-        }
-        .liked-songs th {
-            background-color: #555;
-            color: #fff;
-        }
-        .liked-songs tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-    </style>
+    
 </head>
 <body>
     <div class="container">
+        <div class="header">
+            <img src="../static/images/logo.png" alt="PlayNext Logo">
+            <span class="logo-text">PlayNext</span>
+        </div>
         <div class="main-sections">
             <div class="welcome-section">
-                <h1>Welcome, {{ name }}!</h1>
-                <p class="email">You're logged in! Email: {{ email }}</p>
-                <div class="profile-pic">
+                <h1><div class="profile-pic">
                     <img src="{{ profile_pic }}" alt="Google profile pic">
-                </div>
+                </div> Welcome, {{ name }}! </h1>
                 <a class="button" href="/logout">Logout</a>
                 <a class="button" href="/dashboard">Dashboard</a>
             </div>
@@ -214,28 +89,33 @@
                     <!-- <input type="text" id="track_name" name="track_name" placeholder="Enter track name"> -->
                     <!-- Submit Button -->
                     <br><br>
-                    <button type="submit">Submit</button>
+                    <button type="submit" class="button">Submit</button>
                 </form>
             </div>
         </div>
+    </div>
         <div class="liked-songs">
             <h1>Liked songs</h1>
-            <table>
-                <tr>
-                    <th>Title</th>
-                    <th></th>
-                    <th>Artist</th>
-                </tr>
+            <div class="song-container">
+                <!-- Display each song -->
                 {% for favorite in favorites_collection_data %}
-                <tr>
-                    <td>{{ favorite.track_name }}</td>
-                    <td>.....................</td>
-                    <td>{{ favorite.artist_name }}</td>
-                </tr>
+                <div class="song">
+                    <div class="song-info">
+                        <h2>{{ favorite.track_name }}</h2>
+                        <p class="artist">Artist: {{ favorite.artist_name }}</p>
+                    </div>
+                    <form class="favorite-form" method="post">
+                        <input type="hidden" name="artistName" value="{{ favorite.artist_name }}">
+                        <input type="hidden" name="trackName" value="{{ favorite.track_name }}">
+                        <button type="submit">
+                            <img src="../static/images/like.png" alt="Like">
+                        </button>
+                    </form>
+                </div>
                 {% endfor %}
-            </table>
-        </div>  
-    </div>
+            </div>
+        </div>
+    
 
     <script>
         function validateForm() {

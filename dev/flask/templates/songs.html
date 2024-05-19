@@ -3,100 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <title>Songs</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-top: 20px;
-        }
-
-        .back-button {
-            text-align: left;
-            margin: 20px;
-        }
-
-        .back-button a {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button a:hover {
-            background-color: #0056b3;
-        }
-
-        .song-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .song {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .song-info {
-            flex: 1;
-        }
-
-        .song h2 {
-            color: #3366cc; /* Blue */
-            margin-top: 0;
-        }
-
-        .song p {
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .song p:last-child {
-            margin-bottom: 0;
-        }
-
-        .song .artist {
-            color: #ff7300; /* Yellow */
-        }
-
-        .favorite-form {
-            margin-left: 20px;
-        }
-
-        .favorite-form button {
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .favorite-form button img {
-            width: 24px;
-            height: 24px;
-        }
-    </style>
 </head>
 <body>
-    <div class="back-button">
-        <a href="/">Back</a>
-    </div>
+<div class="songs-container">
+    <a class="button" href="/">Back</a>
     <h1>Songs</h1>
     <div class="song-container">
         <!-- Display each song -->
@@ -116,6 +28,7 @@
         </div>
         {% endfor %}
     </div>
+</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
