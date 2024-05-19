@@ -95,7 +95,7 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        favorites_collection_data = favorites_collection.find()
+        favorites_collection_data = favorites_collection.find({"user_id": current_user.id})
         return render_template('post_login.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic, favorites_collection_data=favorites_collection_data)
     else:
         # return '<a class="button" href="/login">Google Login</a>'
