@@ -18,6 +18,26 @@
             margin-top: 20px;
         }
 
+        .back-button {
+            text-align: left;
+            margin: 20px;
+        }
+
+        .back-button a {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button a:hover {
+            background-color: #0056b3;
+        }
+
         .song-container {
             max-width: 800px;
             margin: 0 auto;
@@ -74,6 +94,9 @@
     </style>
 </head>
 <body>
+    <div class="back-button">
+        <a href="/">Back</a>
+    </div>
     <h1>Songs</h1>
     <div class="song-container">
         <!-- Display each song -->
