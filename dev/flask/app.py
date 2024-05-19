@@ -4,6 +4,8 @@ import os
 import pymongo
 import logging
 from datetime import datetime
+import spotipy 
+import webbrowser 
 
 # Third-party libraries
 from flask import Flask, redirect, request, url_for, render_template, render_template_string, jsonify, Response
@@ -33,6 +35,9 @@ songs_collection = db["songs"]
 users_collection = db["users"]
 user_behavior_collection = db["user_behavior"]
 favorites_collection = db["favorites"]
+
+
+
 
 class User(UserMixin):
     def __init__(self, id_, name, email, profile_pic):
@@ -91,6 +96,27 @@ def load_user(user_id):
 # def render_gradio_page():
 #     interface = gr.Interface(search_recipes, [mood_buttons, genre_buttons], "text")
 #     return render_template("gradio.html", interface=interface)
+
+
+username = "<your_username>"
+clientID = "<your_client_ID>"
+clientSecret = "<your_client_secret>"
+redirect_uri = 'http://google.com/callback/'
+oauth_object = spotipy.SpotifyOAuth(clientID, clientSecret, redirect_uri) 
+token_dict = oauth_object.get_access_token() 
+token = token_dict['access_token'] 
+spotifyObject = spotipy.Spotify(auth=token) 
+user_name = spotifyObject.current_user() 
+
+@app.route('/song_details/<track_name>')
+def song_details(track_name):
+    results = spotifyObject.search(track_name, 1, 0, "track") 
+    songs_dict = results['tracks'] 
+    song_items = songs_dict['items'] 
+    song = song_items[0]['external_urls']['spotify'] 
+    webbrowser.open(song) 
+    return redirect(song) 
+
 
 @app.route("/")
 def index():
