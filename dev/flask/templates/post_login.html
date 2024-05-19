@@ -18,13 +18,18 @@
         }
         .container {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: flex-start;
             width: 80%;
             background-color: #fff;
             border-radius: 20px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+        }
+        .main-sections {
+            display: flex;
+            width: 100%;
         }
         .welcome-section {
             flex: 1;
@@ -104,90 +109,132 @@
         button:hover {
             background-color: #0056b3;
         }
+        .liked-songs {
+            width: 95%;
+            padding: 10px;
+            margin: 5px;
+        }
+        .liked-songs h1 {
+            color: #333;
+        }
+        .liked-songs table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .liked-songs th, .liked-songs td {
+            padding: 10px;
+            text-align: left;
+        }
+        .liked-songs th {
+            background-color: #555;
+            color: #fff;
+        }
+        .liked-songs tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="welcome-section">
-            <h1>Welcome, {{ name }}!</h1>
-            <p class="email">You're logged in! Email: {{ email }}</p>
-            <div class="profile-pic">
-                <img src="{{ profile_pic }}" alt="Google profile pic">
-            </div>
-            <a class="button" href="/logout">Logout</a>
-            <a class="button" href="/dashboard">Dashboard</a>
-        </div>
-        <div class="preferences-section">
-            <h2>Select Your Preferences</h2>
-            <form id="songForm" action="/submit" method="post" onsubmit="return validateForm()">
-                <!-- Mood and Genre Selection -->
-                <div style="display: flex; flex-direction: row;">
-                    <div style="flex: 1;">
-                        <h3>Mood:</h3>
-                        <div>
-                            <input type="radio" id="happy" name="mood" value="happy" required>
-                            <label for="happy">Happy</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="sad" name="mood" value="sad">
-                            <label for="sad">Sad</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="energetic" name="mood" value="energetic">
-                            <label for="energetic">Energetic</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="tired" name="mood" value="tired">
-                            <label for="tired">Tired</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="search" name="mood" value="search">
-                            <label for="search">Search</label>
-                        </div>
-                    </div>
-                    <div style="flex: 1;">
-                        <h3>Genre:</h3>
-                        <div>
-                            <input type="radio" id="pop" name="genre" value="pop" required>
-                            <label for="pop">Pop</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="rock" name="genre" value="rock">
-                            <label for="rock">Rock</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="hip-hop" name="genre" value="hip-hop">
-                            <label for="hip-hop">Hip Hop</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="electronic" name="genre" value="electronic">
-                            <label for="electronic">Electronic</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="jazz" name="genre" value="jazz">
-                            <label for="jazz">Jazz</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="clasical" name="genre" value="clasical">
-                            <label for="clasical">Clasical</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="search" name="genre" value="search">
-                            <label for="search">Search</label>
-                        </div>
-                    </div>
+        <div class="main-sections">
+            <div class="welcome-section">
+                <h1>Welcome, {{ name }}!</h1>
+                <p class="email">You're logged in! Email: {{ email }}</p>
+                <div class="profile-pic">
+                    <img src="{{ profile_pic }}" alt="Google profile pic">
                 </div>
-                <!-- Artist Name -->
-                <h3>Search:</h3>
-                <input type="text" id="artist_name" name="artist_name" placeholder="Type here">
-                <!-- Track Name -->
-                <!-- <h3>Track Name:</h3> -->
-                <!-- <input type="text" id="track_name" name="track_name" placeholder="Enter track name"> -->
-                <!-- Submit Button -->
-                <br><br>
-                <button type="submit">Submit</button>
-            </form>
+                <a class="button" href="/logout">Logout</a>
+                <a class="button" href="/dashboard">Dashboard</a>
+            </div>
+            <div class="preferences-section">
+                <h2>Select Your Preferences</h2>
+                <form id="songForm" action="/submit" method="post" onsubmit="return validateForm()">
+                    <!-- Mood and Genre Selection -->
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="flex: 1;">
+                            <h3>Mood:</h3>
+                            <div>
+                                <input type="radio" id="happy" name="mood" value="happy" required>
+                                <label for="happy">Happy</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="sad" name="mood" value="sad">
+                                <label for="sad">Sad</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="energetic" name="mood" value="energetic">
+                                <label for="energetic">Energetic</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="tired" name="mood" value="tired">
+                                <label for="tired">Tired</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="search" name="mood" value="search">
+                                <label for="search">Search</label>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Genre:</h3>
+                            <div>
+                                <input type="radio" id="pop" name="genre" value="pop" required>
+                                <label for="pop">Pop</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="rock" name="genre" value="rock">
+                                <label for="rock">Rock</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="hip-hop" name="genre" value="hip-hop">
+                                <label for="hip-hop">Hip Hop</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="electronic" name="genre" value="electronic">
+                                <label for="electronic">Electronic</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="jazz" name="genre" value="jazz">
+                                <label for="jazz">Jazz</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="clasical" name="genre" value="clasical">
+                                <label for="clasical">Clasical</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="search" name="genre" value="search">
+                                <label for="search">Search</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Artist Name -->
+                    <h3>Search:</h3>
+                    <input type="text" id="artist_name" name="artist_name" placeholder="Type here">
+                    <!-- Track Name -->
+                    <!-- <h3>Track Name:</h3> -->
+                    <!-- <input type="text" id="track_name" name="track_name" placeholder="Enter track name"> -->
+                    <!-- Submit Button -->
+                    <br><br>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
         </div>
+        <div class="liked-songs">
+            <h1>Liked songs</h1>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th></th>
+                    <th>Artist</th>
+                </tr>
+                {% for favorite in favorites_collection_data %}
+                <tr>
+                    <td>{{ favorite.track_name }}</td>
+                    <td>.....................</td>
+                    <td>{{ favorite.artist_name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>  
     </div>
 
     <script>
@@ -222,7 +269,5 @@
             return true;
         }
     </script>
-
-    
 </body>
 </html>
