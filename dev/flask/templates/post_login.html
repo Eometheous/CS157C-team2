@@ -108,7 +108,7 @@
                         <input type="hidden" name="artistName" value="{{ favorite.artist_name }}">
                         <input type="hidden" name="trackName" value="{{ favorite.track_name }}">
                         <button type="submit">
-                            <img src="../static/images/like.png" alt="Like">
+                            <img src="../static/images/unlike.png" alt="Unlike">
                         </button>
                     </form>
                 </div>
@@ -148,6 +148,41 @@
 
             return true;
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.favorite-form').forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    const formData = new FormData(this);
+                    const trackName = formData.get('trackName');
+                    const artistName = formData.get('artistName');
+
+                    fetch('/unfavorite', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'trackName': trackName,
+                            'artistName': artistName
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('Song unliked successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error unliking the song.');
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html>
