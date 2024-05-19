@@ -133,6 +133,25 @@ def liking_favorite(user_id, trackName, artistName):
             print("Added to favorites collection")
             return True
 
+def unliking_favorite(user_id, trackName, artistName):
+    if user_id:
+        document = {
+            "user_id": user_id,
+            "track_name": trackName,
+            "artist_name": artistName
+        }
+        
+        # Check if the document already exists
+        existing_document = favorites_collection.find_one(document)
+        
+        if existing_document:
+            favorites_collection.delete_one(document)
+            print("Deleted from favorites collection")
+            return True
+        else:
+            print("Document already deleted from the favorites collection.")
+            return False
+
 @app.route('/dashboard')
 def dashboard():
     # Render the dashboard template with dummy history data
@@ -153,6 +172,23 @@ def favorite():
             response = {"status": "success", "message": "Song liked successfully!"}
         else:
             response = {"status": "info", "message": "Song already in favorites."}
+    else:
+        response = {"status": "error", "message": "You need to be logged in to like songs"}
+
+    # Return the response as JSON
+    return jsonify(response), 200 if current_user.is_authenticated else 401
+
+@app.route('/unfavorite', methods=['POST'])
+def unfavorite():
+    trackName = request.form['trackName']
+    artistName = request.form['artistName']
+
+    if current_user.is_authenticated:
+        # Call liking_favorite function with the current user ID
+        if unliking_favorite(current_user.id, trackName, artistName):
+            response = {"status": "success", "message": "Song unliked successfully!"}
+        else:
+            response = {"status": "info", "message": "Song already deleted from favorites."}
     else:
         response = {"status": "error", "message": "You need to be logged in to like songs"}
 
