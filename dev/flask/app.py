@@ -400,7 +400,7 @@ def tired_songs():
          "track_name": 1,
          "genre":1
     })
-    return jsonify(list(tired_songs))
+    return tired_songs
 
 
 def get_google_provider_cfg():
