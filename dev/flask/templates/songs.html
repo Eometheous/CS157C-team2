@@ -59,11 +59,50 @@
         <div class="song">
             <h2>{{ song['track_name'] }}</h2>
             <p class="artist">Artist: {{ song['artist_name'] }}</p>
-            <!-- <p>Genre: {{ song['genre'] }}</p> -->
-            <!-- <p>Mood: {{ song['mood'] }}</p> -->
-            <!-- Add more song information as needed -->
+            <form class="favorite-form" method="post">
+                <input type="hidden" name="artistName" value="{{ song['artist_name'] }}">
+                <input type="hidden" name="trackName" value="{{ song['track_name'] }}">
+                <button type="submit">Like</button>
+            </form>
         </div>
         {% endfor %}
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.favorite-form').forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault();
+
+                    const formData = new FormData(this);
+                    const trackName = formData.get('trackName');
+                    const artistName = formData.get('artistName');
+
+                    fetch('/favorite', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'trackName': trackName,
+                            'artistName': artistName
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('Song liked successfully!');
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error liking the song.');
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

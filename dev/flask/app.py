@@ -31,7 +31,8 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["spotify_songs"]
 songs_collection = db["songs"]
 users_collection = db["users"]
-user_behavior_collection = db["user_behavior"] 
+user_behavior_collection = db["user_behavior"]
+favorites_collection = db["favorites"]
 
 class User(UserMixin):
     def __init__(self, id_, name, email, profile_pic):
@@ -94,7 +95,8 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return render_template('post_login.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic)
+        favorites_collection_data = favorites_collection.find()
+        return render_template('post_login.html', name=current_user.name, email=current_user.email, profile_pic=current_user.profile_pic, favorites_collection=favorites_collection_data)
     else:
         # return '<a class="button" href="/login">Google Login</a>'
         return render_template('login.html')
@@ -112,14 +114,50 @@ def track_user_behavior(user_id, name, mood, genre, search):
         user_behavior_collection.insert_one(document)
         print("added to collection")
 
+def liking_favorite(user_id, trackName, artistName):
+    if user_id:
+        document = {
+            "user_id": user_id,
+            "track_name": trackName,
+            "artist_name": artistName
+        }
+        
+        # Check if the document already exists
+        existing_document = favorites_collection.find_one(document)
+        
+        if existing_document:
+            print("Document already exists in the favorites collection.")
+            return False
+        else:
+            favorites_collection.insert_one(document)
+            print("Added to favorites collection")
+            return True
+
 @app.route('/dashboard')
 def dashboard():
     # Render the dashboard template with dummy history data
     user_behavior_data = user_behavior_collection.find({"user_id": current_user.id}, {"_id": 0,"user_id":0,"name":0})
     print(user_behavior_data)
-    return render_template('dashboard.html', user_behavior_data=user_behavior_data)
+    favorites_collection_data = favorites_collection.find()
+    return render_template('dashboard.html', user_behavior_data=user_behavior_data, favorites_collection_data=favorites_collection_data)
     # return render_template('dashboard.html', history=dummy_history)
 
+@app.route('/favorite', methods=['POST'])
+def favorite():
+    trackName = request.form['trackName']
+    artistName = request.form['artistName']
+
+    if current_user.is_authenticated:
+        # Call liking_favorite function with the current user ID
+        if liking_favorite(current_user.id, trackName, artistName):
+            response = {"status": "success", "message": "Song liked successfully!"}
+        else:
+            response = {"status": "info", "message": "Song already in favorites."}
+    else:
+        response = {"status": "error", "message": "You need to be logged in to like songs"}
+
+    # Return the response as JSON
+    return jsonify(response), 200 if current_user.is_authenticated else 401
 
 @app.route('/submit', methods=['POST'])
 def submit():
