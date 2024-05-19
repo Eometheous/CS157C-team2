@@ -34,6 +34,8 @@ users_collection = db["users"]
 user_behavior_collection = db["user_behavior"]
 favorites_collection = db["favorites"]
 
+songs_collection.create_index([("artist_name", pymongo.TEXT), ("track_name", pymongo.TEXT)]) #index for search function
+
 class User(UserMixin):
     def __init__(self, id_, name, email, profile_pic):
         self.id = id_
@@ -398,7 +400,7 @@ def tired_songs():
          "track_name": 1,
          "genre":1
     })
-    return jsonify(list(tired_songs))
+    return tired_songs
 
 
 def get_google_provider_cfg():
