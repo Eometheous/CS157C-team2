@@ -67,5 +67,29 @@
             {% endfor %}
         </table>
     </div>
+    <div style="width: 100%; background-color: #eee; padding: 10px; margin: 5px;">
+        <h1>Liked songs</h1>
+        
+            <table>
+                <tr>
+                    <th>User</th>
+                    <th></th>
+                    <th>Title</th>
+                    <th></th>
+                    <th>Artist</th>
+    
+                </tr>
+                {% for favorite in favorites_collection_data %}
+                <tr>
+                    <td>{{ favorite.user_id}}</td>
+                    <td>                                    .....................</td>
+                    <td>{{ favorite.track_name }}</td>
+                    <td>                                    .....................</td>
+                    <td>{{ favorite.artist_name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>  
+    </div>
 </body>
 </html>
