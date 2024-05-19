@@ -15,7 +15,7 @@
         {% for song in songs %}
         <div class="song">
             <div class="song-info">
-                <h2>{{ song['track_name'] }}</h2>
+                <h2><a href="{{ url_for('song_details', track_name=song['track_name']) }}">{{ song['track_name'] }}</a></h2>
                 <p class="artist">Artist: {{ song['artist_name'] }}</p>
             </div>
             <form class="favorite-form" method="post">
@@ -30,41 +30,41 @@
     </div>
 </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.favorite-form').forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault();
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.favorite-form').forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
 
-                    const formData = new FormData(this);
-                    const trackName = formData.get('trackName');
-                    const artistName = formData.get('artistName');
+                const formData = new FormData(this);
+                const trackName = formData.get('trackName');
+                const artistName = formData.get('artistName');
 
-                    fetch('/favorite', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: new URLSearchParams({
-                            'trackName': trackName,
-                            'artistName': artistName
-                        })
+                fetch('/favorite', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        'trackName': trackName,
+                        'artistName': artistName
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            alert('Song liked successfully!');
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        alert('Error liking the song.');
-                        console.error('Error:', error);
-                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Song liked successfully!');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Error liking the song.');
+                    console.error('Error:', error);
                 });
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>
